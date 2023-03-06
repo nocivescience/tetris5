@@ -17,8 +17,8 @@ class Piece{
     constructor(shape,ctx){
         this.shape=shape;
         this.ctx=ctx;
-        this.x=0;
-        this.y=Math.floor(rows/2);
+        this.x=Math.floor(cols/2);
+        this.y=0;
     }
     renderPiece(){
         this.shape.forEach((row,i)=>{
@@ -48,11 +48,12 @@ class GameModel{
         return grid;
     }
     renderGameState(){
-        for(let i=0;i<rows;i++){
-            for(let j=0;j<cols;j++){
-                let cell= this.grid[i][j];
-                this.ctx.fillStyle="black";
-                this.ctx.fillRect(j,i,1,1);
+        for(let i=0;i<this.grid.length;i++){
+            for(let j=0;j<this.grid[i].length;j++){
+                if(this.grid[i][j]>0){
+                    this.ctx.fillStyle="black";
+                    this.ctx.fillRect(j,i,1,1);
+                }
             }
         }
         if(this.fallingPiece!==null){
@@ -62,32 +63,26 @@ class GameModel{
     move(right){
         if(this.fallingPiece===null){
             return
-        }
-        let x=this.fallingPiece.x;
-        let y=this.fallingPiece.y;
-        if(right){
-            this.fallingPiece.x+=1;
+        }else{
+            if(right){
+                this.fallingPiece.x--;
+            }
         }
         this.renderGameState();
     }
 }
 const canvas=document.getElementById("game-canvas");
 const ctx=canvas.getContext("2d");
-const newPiece=new Piece(shape[1],ctx);
+const newPiece=new Piece(shape[0],ctx);
 const model=new GameModel(ctx);
-ctx.scale(blockSideLength,blockSideLength);
-
+model.renderGameState();
 if(model.fallingPiece===null){
     model.fallingPiece=newPiece;
-    model.fallingPiece.renderPiece();
-}else{
-    console.log("There is already a piece");
 }
-console.log(model.fallingPiece);
-document.addEventListener("keydown",event=>{
-    event.preventDefault();
-    switch(event.key){
-        case "d":
+document.addEventListener("keydown",e=>{
+    e.preventDefault();
+    switch(e.key){
+        case "a":
             model.move(true);
             break;
     }
