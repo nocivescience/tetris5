@@ -47,6 +47,18 @@ class GameModel{
         }
         return grid;
     }
+    renderGameState(){
+        for(let i=0;i<rows;i++){
+            for(let j=0;j<cols;j++){
+                let cell= this.grid[i][j];
+                this.ctx.fillStyle="black";
+                this.ctx.fillRect(j,i,1,1);
+            }
+        }
+        if(this.fallingPiece!==null){
+            this.fallingPiece.renderPiece();
+        }
+    }
     move(right){
         if(this.fallingPiece===null){
             return
@@ -54,9 +66,9 @@ class GameModel{
         let x=this.fallingPiece.x;
         let y=this.fallingPiece.y;
         if(right){
-            x+=1;
+            this.fallingPiece.x+=1;
         }
-        this.fallingPiece.renderPiece();
+        this.renderGameState();
     }
 }
 const canvas=document.getElementById("game-canvas");
